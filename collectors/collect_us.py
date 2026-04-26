@@ -11,7 +11,7 @@ from datetime import datetime
 import pytz
 
 from proxy import get_proxy, apply_proxy
-from db import get_connection, upsert_ticker, save_snapshot
+from db import get_connection, insert_ticker_if_missing, save_snapshot
 
 warnings.filterwarnings('ignore')
 
@@ -188,8 +188,8 @@ def main():
     try:
         cur = conn.cursor()
         for r in results:
-            upsert_ticker(cur, r['symbol'], r['name_cn'], '',
-                          'US', r['domain'], r['tag'])
+            insert_ticker_if_missing(cur, r['symbol'], r['name_cn'], '',
+                                     'US', r['domain'], r['tag'])
             save_snapshot(cur, r['symbol'], r['price'], r['prev_close'],
                           r['daily_chg'], r['market_cap'], r['pe_ratio'])
         conn.commit()

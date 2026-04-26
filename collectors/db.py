@@ -12,16 +12,20 @@ def get_connection():
     return psycopg.connect(DATABASE_URL)
 
 
-def upsert_ticker(cur, symbol: str, name_cn: str, name_en: str,
-                  market: str, domain: str, tag_type: str):
+def insert_ticker_if_missing(cur, symbol: str, name_cn: str, name_en: str,
+                             market: str, domain: str, tag_type: str):
+    """
+    Insert ticker only if it doesn't already exist. Preserves curated metadata
+    (especially Chinese names) seeded by deploy/seed_data.py — collectors must
+    not overwrite those with yfinance's English shortNames every cron run.
+
+    To intentionally change ticker metadata, edit seed_data.py and re-run it
+    (it uses ON CONFLICT DO UPDATE, so a re-seed is the explicit refresh path).
+    """
     cur.execute("""
         INSERT INTO tickers (symbol, name_cn, name_en, market, domain, tag_type)
         VALUES (%s, %s, %s, %s, %s, %s)
-        ON CONFLICT (symbol) DO UPDATE SET
-            name_cn   = EXCLUDED.name_cn,
-            name_en   = EXCLUDED.name_en,
-            domain    = EXCLUDED.domain,
-            tag_type  = EXCLUDED.tag_type
+        ON CONFLICT (symbol) DO NOTHING
     """, (symbol, name_cn, name_en, market, domain, tag_type))
 
 

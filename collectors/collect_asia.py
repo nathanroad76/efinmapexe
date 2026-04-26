@@ -7,7 +7,7 @@ import yfinance as yf
 from datetime import datetime
 
 from proxy import get_proxy, apply_proxy
-from db import get_connection, save_snapshot
+from db import get_connection, insert_ticker_if_missing, save_snapshot
 
 # =============================================
 # All Asia tickers with their exchange suffix
@@ -94,9 +94,21 @@ def fetch_asia_ticker(symbol: str, rates: dict) -> dict | None:
 
             pe = info.get('trailingPE')
 
+            # Yahoo metadata for first-time registration (overwritten only by re-seed)
+            name_en = info.get('shortName') or info.get('longName') or symbol
+            website = info.get('website', '')
+            domain = ''
+            if website:
+                from urllib.parse import urlparse
+                domain = urlparse(website).netloc.replace('www.', '')
+
             print(f"  {symbol} OK  {price:.0f}  {daily_chg:+.2f}%", flush=True)
             return {
                 'symbol': symbol,
+                'name_cn': name_en,  # placeholder; seed_data.py provides curated 中文名
+                'name_en': name_en,
+                'domain': domain,
+                'market': mkt,
                 'price': price,
                 'prev_close': float(prev_close),
                 'daily_chg': daily_chg,
@@ -125,6 +137,9 @@ def main():
             print(f"[{i+1}/{len(ASIA_TICKERS)}]", end=' ')
             data = fetch_asia_ticker(symbol, rates)
             if data:
+                insert_ticker_if_missing(cur, data['symbol'], data['name_cn'],
+                                         data['name_en'], data['market'],
+                                         data['domain'], data['market'])
                 save_snapshot(cur, data['symbol'], data['price'], data['prev_close'],
                               data['daily_chg'], data['market_cap'], data['pe_ratio'])
                 saved += 1

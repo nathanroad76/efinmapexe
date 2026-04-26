@@ -11,7 +11,7 @@ import yfinance as yf
 from datetime import date, datetime
 
 from proxy import get_proxy, apply_proxy
-from db import get_connection, upsert_ticker, save_snapshot
+from db import get_connection, insert_ticker_if_missing, save_snapshot
 
 # =============================================
 # Ticker list (code without .HK suffix, 5 digits)
@@ -67,9 +67,20 @@ def fetch_hk_ticker(code: str) -> dict | None:
 
             pe = info.get('trailingPE')
 
+            # Yahoo metadata for first-time registration (overwritten only by re-seed)
+            name_en = info.get('shortName') or info.get('longName') or yf_symbol
+            website = info.get('website', '')
+            domain = ''
+            if website:
+                from urllib.parse import urlparse
+                domain = urlparse(website).netloc.replace('www.', '')
+
             print(f"  {yf_symbol} OK  {price:.2f}  {daily_chg:+.2f}%", flush=True)
             return {
                 'symbol': yf_symbol,
+                'name_cn': name_en,  # placeholder; seed_data.py provides curated 中文名
+                'name_en': name_en,
+                'domain': domain,
                 'price': price,
                 'prev_close': float(prev_close),
                 'daily_chg': daily_chg,
@@ -97,7 +108,8 @@ def main():
             print(f"[{i+1}/{len(ALL_HK_TICKERS)}]", end=' ')
             data = fetch_hk_ticker(code)
             if data:
-                # Ticker metadata is already seeded; just save the snapshot
+                insert_ticker_if_missing(cur, data['symbol'], data['name_cn'],
+                                         data['name_en'], 'HK', data['domain'], 'HK')
                 save_snapshot(cur, data['symbol'], data['price'], data['prev_close'],
                               data['daily_chg'], data['market_cap'], data['pe_ratio'])
                 saved += 1
