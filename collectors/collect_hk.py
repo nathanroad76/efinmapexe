@@ -85,7 +85,7 @@ def fetch_hk_ticker(code: str) -> dict | None:
                 'prev_close': float(prev_close),
                 'daily_chg': daily_chg,
                 'market_cap': int(market_cap_hkd),
-                'pe_ratio': float(pe) if pe and pe > 0 else None,
+                'pe_ratio': float(pe) if pe and float(pe) > 0 else None,
             }
         except Exception as e:
             print(f"  {yf_symbol} attempt {attempt+1} failed: {e}", flush=True)

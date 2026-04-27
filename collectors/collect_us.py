@@ -139,7 +139,7 @@ def fetch_ticker(yf_symbol: str, display: str, name_cn: str,
                 'prev_close': float(prev_close),
                 'daily_chg': daily_chg,
                 'market_cap': int(market_cap),
-                'pe_ratio': float(pe) if pe and pe > 0 else None,
+                'pe_ratio': float(pe) if pe and float(pe) > 0 else None,
             }
         except Exception as e:
             print(f"  {display} attempt {attempt+1} failed: {e}", flush=True)

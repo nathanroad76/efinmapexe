@@ -113,7 +113,7 @@ def fetch_asia_ticker(symbol: str, rates: dict) -> dict | None:
                 'prev_close': float(prev_close),
                 'daily_chg': daily_chg,
                 'market_cap': market_cap_usd,
-                'pe_ratio': float(pe) if pe and pe > 0 else None,
+                'pe_ratio': float(pe) if pe and float(pe) > 0 else None,
             }
         except Exception as e:
             print(f"  {symbol} attempt {attempt+1} failed: {e}", flush=True)
