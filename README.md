@@ -1,15 +1,15 @@
 # efinmap v3 — 桌面股票热力图 | Desktop Stock Heatmap
 
-实时追踪 **美股 / 港股 / 日韩台** 市场涨跌的桌面应用，无需浏览器，开箱即用。
+通过Yahoo延时行情，追踪 **美股 / 港股 / 日韩台** 市场涨跌的桌面应用，无需浏览器，开箱即用。
 
-Real-time stock heatmap desktop app covering **US / HK / JP-KR-TW** markets. No browser needed, run straight from the EXE.
+ stock heatmap desktop app covering **US / HK / JP-KR-TW** markets. No browser needed, run straight from the EXE.
 
 ---
 
 ## 功能特点 | Features
 
 ### 📊 热力图 | Heatmap
-- 美股 US (119只) | 港股 HK (108只) | 日韩台 Asia (71只) | 自选 Watchlist
+- 默认美股 US (119只) | 港股 HK (108只) | 日韩台 Asia (71只) | 自选 Watchlist
 - 涨跌幅颜色方块，一目了然
 - Color-coded tiles showing real-time performance
 
