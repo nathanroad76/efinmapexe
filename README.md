@@ -51,7 +51,9 @@ Real-time stock heatmap desktop app covering **US / HK / JP-KR-TW** markets. No 
 
 ## 截图 | Screenshots
 
-*(Insert screenshots here)*
+<img width="1185" height="734" alt="2" src="https://github.com/user-attachments/assets/36b5816a-d02c-4526-9e72-781eff409573" />
+<img width="1260" height="745" alt="1" src="https://github.com/user-attachments/assets/c781f18c-58f1-4c82-b201-81e04b4d0cfd" />
+
 
 ---
 
